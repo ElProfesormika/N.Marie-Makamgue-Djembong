@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: portfolio
+      POSTGRES_PASSWORD: portfolio
+      POSTGRES_DB: mama_coco
+    ports:
+      - "5433:5432"
+    volumes:
+      - mama_coco_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U portfolio -d mama_coco"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  mama_coco_pg:
