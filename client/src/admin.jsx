@@ -1,8 +1,30 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink, Navigate, Outlet, useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { Link, NavLink, Navigate, Outlet, useLocation, useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { api, getToken, setToken } from "./api.js";
+import { ThemeToggle } from "./components.jsx";
+import { LangSwitch, adminPageLabel, localizeCollection, sectionLabel, useLang } from "./i18n.jsx";
 import { ODDS } from "./odds.jsx";
 import { COLLECTIONS, PATHS, SECTION_DEFAULTS } from "./site.jsx";
+
+const ODD_EN = {
+  1: "No poverty",
+  2: "Zero hunger",
+  3: "Good health and well-being",
+  4: "Quality education",
+  5: "Gender equality",
+  6: "Clean water and sanitation",
+  7: "Affordable and clean energy",
+  8: "Decent work and economic growth",
+  9: "Industry, innovation and infrastructure",
+  10: "Reduced inequalities",
+  11: "Sustainable cities and communities",
+  12: "Responsible consumption and production",
+  13: "Climate action",
+  14: "Life below water",
+  15: "Life on land",
+  16: "Peace, justice and strong institutions",
+  17: "Partnerships for the goals",
+};
 
 function useAdminData() {
   const navigate = useNavigate();
@@ -39,14 +61,16 @@ function useAdminData() {
 
 export function LoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("admin@ungestedivin.org");
+  const { t } = useLang();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    document.title = "Administration · Mama Coco";
+    document.title = `${t("adminKicker")} · Mama Coco`;
     if (getToken()) navigate("/admin");
-  }, [navigate]);
+  }, [navigate, t]);
 
   async function submit(event) {
     event.preventDefault();
@@ -63,14 +87,38 @@ export function LoginPage() {
   return (
     <main className="login">
       <form className="card form" onSubmit={submit}>
-        <Link className="back" to="/">← Retour au site</Link>
-        <p className="kicker">Administration</p>
+        <div className="row-between">
+          <Link className="back" to="/">{t("adminBack")}</Link>
+          <span className="login-tools">
+            <LangSwitch />
+            <ThemeToggle />
+          </span>
+        </div>
+        <p className="kicker">{t("adminKicker")}</p>
         <h1>Mama Coco</h1>
-        <p className="intro">Modifiez les textes, les photos, les pages et les messages.</p>
-        <label>E-mail<input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></label>
-        <label>Mot de passe<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required /></label>
+        <p className="intro">{t("adminLead")}</p>
+        <label>{t("email")}<input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></label>
+        <label>
+          {t("adminPassword")}
+          <div className="secret">
+            <input
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button
+              type="button"
+              className="secret-btn"
+              aria-pressed={showPassword}
+              onClick={() => setShowPassword((value) => !value)}
+            >
+              {showPassword ? t("adminHide") : t("adminShow")}
+            </button>
+          </div>
+        </label>
         {error && <p className="form-error">{error}</p>}
-        <button className="btn btn-dark" type="submit">Entrer</button>
+        <button className="btn btn-dark" type="submit">{t("adminEnter")}</button>
       </form>
     </main>
   );
@@ -78,29 +126,35 @@ export function LoginPage() {
 
 export function AdminLayout() {
   const admin = useAdminData();
+  const { lang, t } = useLang();
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
   if (!getToken()) return <Navigate to="/admin/login" replace />;
   if (admin.error) return <div className="splash"><h1>{admin.error}</h1></div>;
-  if (!admin.data) return <div className="splash"><p>Ouverture de l'administration…</p></div>;
+  if (!admin.data) return <div className="splash"><p>{t("adminOpening")}</p></div>;
 
   const groups = [
-    ["Textes des pages", admin.data.pages.map((page) => ({ to: `/admin/pages/${page.slug}`, label: page.nav_label }))],
-    ["Listes & photos", COLLECTIONS.map((item) => ({ to: `/admin/listes/${item.key}`, label: item.label }))],
+    [t("adminPages"), admin.data.pages.map((page) => ({ to: `/admin/pages/${page.slug}`, label: adminPageLabel(page.slug, page.nav_label, lang) }))],
+    [t("adminLists"), COLLECTIONS.map((item) => ({ to: `/admin/listes/${item.key}`, label: localizeCollection(item, lang).label }))],
   ];
 
   return (
     <div className="admin-shell">
       <aside className="admin-side">
         <Link className="brand" to="/admin">
-          <span className="mark">MC</span>
-          <span><strong>Administration</strong><small>Mama Coco</small></span>
+          <img className="brand-logo" src="/mama-coco-logo.png" alt="" />
+          <span><strong>{t("adminBrand")}</strong><small>Mama Coco</small></span>
         </Link>
         <nav>
-          <NavLink end to="/admin">Tableau de bord</NavLink>
-          <NavLink to="/admin/reglages">Identité, photo, contact</NavLink>
+          <NavLink end to="/admin">{t("adminDash")}</NavLink>
+          <NavLink to="/admin/reglages">{t("adminIdentityNav")}</NavLink>
           <NavLink to="/admin/messages">
-            Messages {admin.data.unreadMessages > 0 && <em>{admin.data.unreadMessages}</em>}
+            {t("adminMessages")} {admin.data.unreadMessages > 0 && <em>{admin.data.unreadMessages}</em>}
           </NavLink>
-          <NavLink to="/admin/compte">Mot de passe</NavLink>
+          <NavLink to="/admin/compte">{t("adminPassword")}</NavLink>
           {groups.map(([title, links]) => (
             <div key={title}>
               <p>{title}</p>
@@ -111,8 +165,10 @@ export function AdminLayout() {
           ))}
         </nav>
         <div className="side-links">
-          <Link to="/">Voir le site</Link>
-          <button type="button" onClick={() => { setToken(""); window.location.href = "/admin/login"; }}>Quitter</button>
+          <Link to="/">{t("adminViewSite")}</Link>
+          <LangSwitch />
+          <ThemeToggle />
+          <button type="button" onClick={() => { setToken(""); window.location.href = "/admin/login"; }}>{t("adminLeave")}</button>
         </div>
       </aside>
       <div className="admin-main">
@@ -125,21 +181,22 @@ export function AdminLayout() {
 
 export function Dashboard() {
   const { data } = useOutletContext();
+  const { t } = useLang();
   const photos = data.entries.filter((item) => item.collection === "galerie").length;
   return (
     <section>
-      <p className="kicker">Tableau de bord</p>
-      <h1>La main sur tout le site</h1>
-      <p className="intro">Chaque page a ses textes. Chaque liste se complète, se modifie ou se supprime. Les photos viennent de votre ordinateur.</p>
+      <p className="kicker">{t("adminDash")}</p>
+      <h1>{t("dashTitle")}</h1>
+      <p className="intro">{t("dashLead")}</p>
       <div className="cards three">
-        <article className="card stat"><strong>{data.pages.length}</strong><h2>pages</h2></article>
-        <article className="card stat"><strong>{photos}</strong><h2>photos</h2></article>
-        <article className="card stat"><strong>{data.unreadMessages}</strong><h2>messages non lus</h2></article>
+        <article className="card stat"><strong>{data.pages.length}</strong><h2>{t("dashPages")}</h2></article>
+        <article className="card stat"><strong>{photos}</strong><h2>{t("dashPhotos")}</h2></article>
+        <article className="card stat"><strong>{data.unreadMessages}</strong><h2>{t("dashUnread")}</h2></article>
       </div>
       <div className="cards three section">
-        <Link className="card teaser" to="/admin/reglages"><h3>Changer la photo d'accueil</h3><span>Et les coordonnées</span></Link>
-        <Link className="card teaser" to="/admin/listes/galerie"><h3>Ajouter des photos</h3><span>Depuis l'ordinateur</span></Link>
-        <Link className="card teaser" to="/admin/messages"><h3>Lire les messages</h3><span>Formulaire de contact</span></Link>
+        <Link className="card teaser" to="/admin/reglages"><h3>{t("dashPhoto")}</h3><span>{t("dashPhotoSub")}</span></Link>
+        <Link className="card teaser" to="/admin/listes/galerie"><h3>{t("dashAddPhotos")}</h3><span>{t("dashAddSub")}</span></Link>
+        <Link className="card teaser" to="/admin/messages"><h3>{t("dashRead")}</h3><span>{t("dashReadSub")}</span></Link>
       </div>
     </section>
   );
@@ -147,13 +204,14 @@ export function Dashboard() {
 
 export function PageEditor() {
   const { slug } = useParams();
+  const { t } = useLang();
   const { data, reload, toast } = useOutletContext();
   const source = data.pages.find((page) => page.slug === slug);
   const [form, setForm] = useState(source);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => setForm(source), [source]);
-  if (!form) return <p>Page introuvable.</p>;
+  if (!form) return <p>{t("pageMissing")}</p>;
 
   function setField(key, value) {
     setForm((current) => ({ ...current, [key]: value }));
@@ -170,7 +228,7 @@ export function PageEditor() {
     try {
       await api(`/api/admin/pages/${slug}`, { method: "PUT", auth: true, body: form });
       await reload();
-      toast("Page enregistrée");
+      toast(t("savedPage"));
     } catch (err) {
       toast(err.message);
     } finally {
@@ -180,37 +238,37 @@ export function PageEditor() {
 
   return (
     <form className="editor" onSubmit={save}>
-      <p className="kicker">Page</p>
+      <p className="kicker">{t("pageKicker")}</p>
       <h1>{form.nav_label}</h1>
-      {PATHS[slug] && <p><Link to={PATHS[slug]}>Voir cette page</Link></p>}
+      {PATHS[slug] && <p><Link to={PATHS[slug]}>{t("viewPage")}</Link></p>}
       <div className="grid-2">
-        <label>Nom dans le menu<input value={form.nav_label} onChange={(e) => setField("nav_label", e.target.value)} /></label>
-        <label>Ordre dans le menu<input type="number" value={form.nav_order} onChange={(e) => setField("nav_order", Number(e.target.value))} /></label>
+        <label>{t("menuName")}<input value={form.nav_label} onChange={(e) => setField("nav_label", e.target.value)} /></label>
+        <label>{t("menuOrder")}<input type="number" value={form.nav_order} onChange={(e) => setField("nav_order", Number(e.target.value))} /></label>
       </div>
-      <label>Surtitre<input value={form.kicker || ""} onChange={(e) => setField("kicker", e.target.value)} /></label>
-      <label>Titre<input value={form.title || ""} onChange={(e) => setField("title", e.target.value)} /></label>
-      <label>Sous-titre<input value={form.subtitle || ""} onChange={(e) => setField("subtitle", e.target.value)} /></label>
-      <label>Introduction<textarea value={form.intro || ""} onChange={(e) => setField("intro", e.target.value)} /></label>
-      <label>Citation<textarea value={form.quote || ""} onChange={(e) => setField("quote", e.target.value)} /></label>
-      <label>Auteur de la citation<input value={form.quote_author || ""} onChange={(e) => setField("quote_author", e.target.value)} /></label>
+      <label>{t("fieldKicker")}<input value={form.kicker || ""} onChange={(e) => setField("kicker", e.target.value)} /></label>
+      <label>{t("fieldTitle")}<input value={form.title || ""} onChange={(e) => setField("title", e.target.value)} /></label>
+      <label>{t("fieldSubtitle")}<input value={form.subtitle || ""} onChange={(e) => setField("subtitle", e.target.value)} /></label>
+      <label>{t("fieldIntro")}<textarea value={form.intro || ""} onChange={(e) => setField("intro", e.target.value)} /></label>
+      <label>{t("fieldQuote")}<textarea value={form.quote || ""} onChange={(e) => setField("quote", e.target.value)} /></label>
+      <label>{t("fieldQuoteAuthor")}<input value={form.quote_author || ""} onChange={(e) => setField("quote_author", e.target.value)} /></label>
       <div className="checks">
-        <label><input type="checkbox" checked={form.show_in_nav} onChange={(e) => setField("show_in_nav", e.target.checked)} /> Visible dans le menu</label>
-        <label><input type="checkbox" checked={form.published} onChange={(e) => setField("published", e.target.checked)} /> Page publiée</label>
+        <label><input type="checkbox" checked={form.show_in_nav} onChange={(e) => setField("show_in_nav", e.target.checked)} /> {t("inMenu")}</label>
+        <label><input type="checkbox" checked={form.published} onChange={(e) => setField("published", e.target.checked)} /> {t("published")}</label>
       </div>
       <div className="blocks-editor">
         <div className="row-between">
-          <h2>Paragraphes</h2>
-          <button type="button" className="btn btn-line" onClick={() => setField("blocks", [...(form.blocks || []), { heading: "", text: "" }])}>Ajouter un paragraphe</button>
+          <h2>{t("paragraphs")}</h2>
+          <button type="button" className="btn btn-line" onClick={() => setField("blocks", [...(form.blocks || []), { heading: "", text: "" }])}>{t("addParagraph")}</button>
         </div>
         {(form.blocks || []).map((block, index) => (
           <div className="card" key={index}>
-            <label>Titre du paragraphe<input value={block.heading} onChange={(e) => setBlock(index, "heading", e.target.value)} /></label>
-            <label>Texte<textarea value={block.text} onChange={(e) => setBlock(index, "text", e.target.value)} /></label>
-            <button type="button" className="btn btn-danger" onClick={() => setField("blocks", form.blocks.filter((_, i) => i !== index))}>Supprimer ce paragraphe</button>
+            <label>{t("paragraphTitle")}<input value={block.heading} onChange={(e) => setBlock(index, "heading", e.target.value)} /></label>
+            <label>{t("fieldText")}<textarea value={block.text} onChange={(e) => setBlock(index, "text", e.target.value)} /></label>
+            <button type="button" className="btn btn-danger" onClick={() => setField("blocks", form.blocks.filter((_, i) => i !== index))}>{t("deleteParagraph")}</button>
           </div>
         ))}
       </div>
-      <button className="btn btn-dark" type="submit" disabled={saving}>{saving ? "Enregistrement…" : "Enregistrer la page"}</button>
+      <button className="btn btn-dark" type="submit" disabled={saving}>{saving ? t("saving") : t("savePage")}</button>
     </form>
   );
 }
@@ -223,6 +281,7 @@ async function uploadImage(file) {
 }
 
 function ImageField({ value, onChange }) {
+  const { t } = useLang();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -243,18 +302,19 @@ function ImageField({ value, onChange }) {
 
   return (
     <div className="image-field">
-      {value ? <img src={value} alt="" /> : <div className="ph">Aucune photo</div>}
+      {value ? <img src={value} alt="" /> : <div className="ph">{t("noPhoto")}</div>}
       <label className="btn btn-line">
-        {busy ? "Envoi…" : "Choisir une photo"}
+        {busy ? t("sending") : t("choosePhoto")}
         <input type="file" accept="image/*" hidden onChange={pick} />
       </label>
-      {value && <button type="button" className="btn btn-danger" onClick={() => onChange("")}>Retirer</button>}
+      {value && <button type="button" className="btn btn-danger" onClick={() => onChange("")}>{t("removePhoto")}</button>}
       {error && <p className="form-error">{error}</p>}
     </div>
   );
 }
 
 function EntryCard({ item, meta, siblings, onChanged, toast }) {
+  const { lang, t } = useLang();
   const [form, setForm] = useState(item);
   const [saving, setSaving] = useState(false);
   useEffect(() => setForm(item), [item]);
@@ -264,7 +324,7 @@ function EntryCard({ item, meta, siblings, onChanged, toast }) {
     try {
       await api(`/api/admin/entries/${item.id}`, { method: "PUT", auth: true, body: form });
       await onChanged();
-      toast("Élément enregistré");
+      toast(t("savedItem"));
     } catch (err) {
       toast(err.message);
     } finally {
@@ -273,10 +333,10 @@ function EntryCard({ item, meta, siblings, onChanged, toast }) {
   }
 
   async function remove() {
-    if (!window.confirm("Supprimer cet élément ?")) return;
+    if (!window.confirm(t("confirmDelete"))) return;
     await api(`/api/admin/entries/${item.id}`, { method: "DELETE", auth: true });
     await onChanged();
-    toast("Élément supprimé");
+    toast(t("deletedItem"));
   }
 
   async function move(direction) {
@@ -312,7 +372,7 @@ function EntryCard({ item, meta, siblings, onChanged, toast }) {
                       }}
                     />
                     <i style={{ background: odd.color }}>{odd.id}</i>
-                    {odd.name}
+                    {lang === "en" ? ODD_EN[odd.id] || odd.name : odd.name}
                   </label>
                 );
               })}
@@ -345,7 +405,7 @@ function EntryCard({ item, meta, siblings, onChanged, toast }) {
             <input
               type="number"
               step="0.01"
-              placeholder="Automatique"
+              placeholder={t("automatic")}
               value={form.extra?.[field.key] ?? ""}
               onChange={(event) => {
                 const extra = { ...(form.extra || {}) };
@@ -367,13 +427,13 @@ function EntryCard({ item, meta, siblings, onChanged, toast }) {
       ))}
       <label className="check">
         <input type="checkbox" checked={form.published} onChange={(e) => setForm({ ...form, published: e.target.checked })} />
-        Visible sur le site
+        {t("visibleOnSite")}
       </label>
       <div className="entry-actions">
-        <button type="button" className="btn btn-dark" onClick={save} disabled={saving}>{saving ? "…" : "Enregistrer"}</button>
-        <button type="button" className="btn btn-line" onClick={() => move(-1)}>Monter</button>
-        <button type="button" className="btn btn-line" onClick={() => move(1)}>Descendre</button>
-        <button type="button" className="btn btn-danger" onClick={remove}>Supprimer</button>
+        <button type="button" className="btn btn-dark" onClick={save} disabled={saving}>{saving ? "…" : t("save")}</button>
+        <button type="button" className="btn btn-line" onClick={() => move(-1)}>{t("moveUp")}</button>
+        <button type="button" className="btn btn-line" onClick={() => move(1)}>{t("moveDown")}</button>
+        <button type="button" className="btn btn-danger" onClick={remove}>{t("deleteItem")}</button>
       </div>
     </article>
   );
@@ -381,19 +441,20 @@ function EntryCard({ item, meta, siblings, onChanged, toast }) {
 
 export function CollectionEditor() {
   const { key } = useParams();
+  const { lang, t } = useLang();
   const { data, reload, toast } = useOutletContext();
-  const meta = COLLECTIONS.find((item) => item.key === key);
+  const meta = localizeCollection(COLLECTIONS.find((item) => item.key === key), lang);
   const items = data.entries.filter((item) => item.collection === key);
-  if (!meta) return <p>Liste introuvable.</p>;
+  if (!meta) return <p>{t("listMissing")}</p>;
 
   async function add() {
     await api("/api/admin/entries", {
       method: "POST",
       auth: true,
-      body: { collection: key, title: "Nouvel élément", published: true },
+      body: { collection: key, title: t("newItem"), published: true },
     });
     await reload();
-    toast("Élément ajouté");
+    toast(t("addedItem"));
   }
 
   return (
@@ -401,14 +462,14 @@ export function CollectionEditor() {
       <p className="kicker">{meta.page}</p>
       <div className="row-between">
         <h1>{meta.label}</h1>
-        <button type="button" className="btn btn-gold" onClick={add}>Ajouter</button>
+        <button type="button" className="btn btn-gold" onClick={add}>{t("add")}</button>
       </div>
-      <p className="intro">Ajoutez, modifiez, réordonnez ou supprimez. Les photos se choisissent sur votre ordinateur.</p>
+      <p className="intro">{t("listLead")}</p>
       <div className="stack">
         {items.map((item) => (
           <EntryCard key={item.id} item={item} meta={meta} siblings={items} onChanged={reload} toast={toast} />
         ))}
-        {items.length === 0 && <p>Cette liste est vide.</p>}
+        {items.length === 0 && <p>{t("emptyList")}</p>}
       </div>
     </section>
   );
@@ -448,6 +509,7 @@ const SECTION_LABELS = {
 };
 
 export function SettingsEditor() {
+  const { lang, t } = useLang();
   const { data, reload, toast } = useOutletContext();
   const [brand, setBrand] = useState(data.settings.brand || {});
   const [hero, setHero] = useState(data.settings.hero || {});
@@ -460,7 +522,7 @@ export function SettingsEditor() {
     try {
       await api(`/api/admin/settings/${key}`, { method: "PUT", auth: true, body: value });
       await reload();
-      toast("Réglage enregistré");
+      toast(t("savedSetting"));
     } catch (err) {
       toast(err.message);
     } finally {
@@ -471,58 +533,59 @@ export function SettingsEditor() {
   return (
     <section className="stack">
       <div>
-        <p className="kicker">Réglages</p>
-        <h1>Identité, photos, contact</h1>
+        <p className="kicker">{t("settingsKicker")}</p>
+        <h1>{t("settingsTitle")}</h1>
       </div>
       <form className="card editor" onSubmit={(e) => { e.preventDefault(); save("brand", brand); }}>
-        <h2>Identité</h2>
-        <label>Nom complet<input value={brand.name || ""} onChange={(e) => setBrand({ ...brand, name: e.target.value })} /></label>
-        <label>Alias<input value={brand.alias || ""} onChange={(e) => setBrand({ ...brand, alias: e.target.value })} /></label>
-        <label>Initiales du logo<input value={brand.mark || ""} onChange={(e) => setBrand({ ...brand, mark: e.target.value })} /></label>
-        <label>Bandeau du haut<input value={brand.topbar || ""} onChange={(e) => setBrand({ ...brand, topbar: e.target.value })} /></label>
-        <label>Citation du pied de page<textarea value={brand.footerQuote || ""} onChange={(e) => setBrand({ ...brand, footerQuote: e.target.value })} /></label>
-        <label>Nom du menu Moi<input value={brand.portraitMenu || ""} onChange={(e) => setBrand({ ...brand, portraitMenu: e.target.value })} placeholder="Moi" /></label>
-        <button className="btn btn-dark" type="submit" disabled={saving === "brand"}>Enregistrer l'identité</button>
+        <h2>{t("identity")}</h2>
+        <label>{t("fullName")}<input value={brand.name || ""} onChange={(e) => setBrand({ ...brand, name: e.target.value })} /></label>
+        <label>{t("alias")}<input value={brand.alias || ""} onChange={(e) => setBrand({ ...brand, alias: e.target.value })} /></label>
+        <label>{t("mark")}<input value={brand.mark || ""} onChange={(e) => setBrand({ ...brand, mark: e.target.value })} /></label>
+        <label>{t("topbar")}<input value={brand.topbar || ""} onChange={(e) => setBrand({ ...brand, topbar: e.target.value })} /></label>
+        <label>{t("footerQuote")}<textarea value={brand.footerQuote || ""} onChange={(e) => setBrand({ ...brand, footerQuote: e.target.value })} /></label>
+        <label>{t("portraitMenu")}<input value={brand.portraitMenu || ""} onChange={(e) => setBrand({ ...brand, portraitMenu: e.target.value })} placeholder="Moi" /></label>
+        <button className="btn btn-dark" type="submit" disabled={saving === "brand"}>{t("saveIdentity")}</button>
       </form>
       <form className="card editor" onSubmit={(e) => { e.preventDefault(); save("hero", hero); }}>
-        <h2>Photos principales</h2>
-        <label>Grande phrase<input value={hero.headline || ""} onChange={(e) => setHero({ ...hero, headline: e.target.value })} /></label>
-        <label>Texte sous la phrase<textarea value={hero.lead || ""} onChange={(e) => setHero({ ...hero, lead: e.target.value })} /></label>
-        <label>Ligne de fonctions<input value={hero.roles || ""} onChange={(e) => setHero({ ...hero, roles: e.target.value })} /></label>
-        <label>Badge<input value={hero.badge || ""} onChange={(e) => setHero({ ...hero, badge: e.target.value })} /></label>
-        <label>Mention à côté du badge<input value={hero.aside || ""} onChange={(e) => setHero({ ...hero, aside: e.target.value })} /></label>
-        <p className="kicker">Photo d'accueil</p>
+        <h2>{t("mainPhotos")}</h2>
+        <label>{t("headline")}<input value={hero.headline || ""} onChange={(e) => setHero({ ...hero, headline: e.target.value })} /></label>
+        <label>{t("lead")}<textarea value={hero.lead || ""} onChange={(e) => setHero({ ...hero, lead: e.target.value })} /></label>
+        <label>{t("roles")}<input value={hero.roles || ""} onChange={(e) => setHero({ ...hero, roles: e.target.value })} /></label>
+        <label>{t("badge")}<input value={hero.badge || ""} onChange={(e) => setHero({ ...hero, badge: e.target.value })} /></label>
+        <label>{t("aside")}<input value={hero.aside || ""} onChange={(e) => setHero({ ...hero, aside: e.target.value })} /></label>
+        <p className="kicker">{t("homePhoto")}</p>
         <ImageField value={hero.photo || ""} onChange={(photo) => setHero({ ...hero, photo })} />
-        <p className="kicker">Portrait de la page Qui suis-je</p>
+        <p className="kicker">{t("portraitPhoto")}</p>
         <ImageField value={hero.portrait || ""} onChange={(portrait) => setHero({ ...hero, portrait })} />
-        <button className="btn btn-dark" type="submit" disabled={saving === "hero"}>Enregistrer les photos</button>
+        <button className="btn btn-dark" type="submit" disabled={saving === "hero"}>{t("savePhotos")}</button>
       </form>
       <form className="card editor" onSubmit={(e) => { e.preventDefault(); save("contact", contact); }}>
-        <h2>Contact</h2>
-        <label>Organisation<input value={contact.org || ""} onChange={(e) => setContact({ ...contact, org: e.target.value })} /></label>
-        <label>Adresse<textarea value={contact.address || ""} onChange={(e) => setContact({ ...contact, address: e.target.value })} /></label>
-        <label>Téléphone<input value={contact.phone || ""} onChange={(e) => setContact({ ...contact, phone: e.target.value })} /></label>
-        <label>E-mail<input value={contact.email || ""} onChange={(e) => setContact({ ...contact, email: e.target.value })} /></label>
-        <label>Site web<input value={contact.website || ""} onChange={(e) => setContact({ ...contact, website: e.target.value })} /></label>
-        <label>Libellé du site<input value={contact.websiteLabel || ""} onChange={(e) => setContact({ ...contact, websiteLabel: e.target.value })} /></label>
-        <button className="btn btn-dark" type="submit" disabled={saving === "contact"}>Enregistrer le contact</button>
+        <h2>{t("contact")}</h2>
+        <label>{t("org")}<input value={contact.org || ""} onChange={(e) => setContact({ ...contact, org: e.target.value })} /></label>
+        <label>{t("address")}<textarea value={contact.address || ""} onChange={(e) => setContact({ ...contact, address: e.target.value })} /></label>
+        <label>{t("phone")}<input value={contact.phone || ""} onChange={(e) => setContact({ ...contact, phone: e.target.value })} /></label>
+        <label>{t("email")}<input value={contact.email || ""} onChange={(e) => setContact({ ...contact, email: e.target.value })} /></label>
+        <label>{t("websiteField")}<input value={contact.website || ""} onChange={(e) => setContact({ ...contact, website: e.target.value })} /></label>
+        <label>{t("websiteLabel")}<input value={contact.websiteLabel || ""} onChange={(e) => setContact({ ...contact, websiteLabel: e.target.value })} /></label>
+        <button className="btn btn-dark" type="submit" disabled={saving === "contact"}>{t("saveContact")}</button>
       </form>
       <form className="card editor" onSubmit={(e) => { e.preventDefault(); save("sections", sections); }}>
-        <h2>Titres des sections</h2>
-        <p className="intro">Les listes, les photos et les textes de chaque page se modifient dans le menu de gauche. Ici, ce sont les titres affichés au-dessus de ces listes.</p>
+        <h2>{t("sectionTitles")}</h2>
+        <p className="intro">{t("sectionLead")}</p>
         {Object.entries(SECTION_LABELS).map(([key, label]) => (
           <label key={key}>
-            {label}
+            {sectionLabel(key, label, lang)}
             <input value={sections[key] || ""} onChange={(e) => setSections({ ...sections, [key]: e.target.value })} />
           </label>
         ))}
-        <button className="btn btn-dark" type="submit" disabled={saving === "sections"}>Enregistrer les titres</button>
+        <button className="btn btn-dark" type="submit" disabled={saving === "sections"}>{t("saveTitles")}</button>
       </form>
     </section>
   );
 }
 
 export function MessagesPage() {
+  const { lang, t } = useLang();
   const { toast } = useOutletContext();
   const [messages, setMessages] = useState([]);
 
@@ -536,27 +599,27 @@ export function MessagesPage() {
     await load();
   }
   async function remove(message) {
-    if (!window.confirm("Supprimer ce message ?")) return;
+    if (!window.confirm(t("confirmDeleteMessage"))) return;
     await api(`/api/admin/messages/${message.id}`, { method: "DELETE", auth: true });
     await load();
-    toast("Message supprimé");
+    toast(t("deletedMessage"));
   }
 
   return (
     <section>
-      <p className="kicker">Boîte</p>
-      <h1>Messages reçus</h1>
+      <p className="kicker">{t("inbox")}</p>
+      <h1>{t("received")}</h1>
       <div className="stack">
-        {messages.length === 0 && <p>Aucun message pour le moment.</p>}
+        {messages.length === 0 && <p>{t("noMessages")}</p>}
         {messages.map((message) => (
           <article className={`card message ${message.read ? "" : "unread"}`} key={message.id}>
-            <p className="kicker">{new Date(message.created_at).toLocaleString("fr-BE")} · {message.read ? "Lu" : "Non lu"}</p>
+            <p className="kicker">{new Date(message.created_at).toLocaleString(lang === "en" ? "en-GB" : "fr-BE")} · {message.read ? t("read") : t("unread")}</p>
             <h2>{message.name}</h2>
             <p><a href={`mailto:${message.email}`}>{message.email}</a>{message.phone ? ` · ${message.phone}` : ""}</p>
             <p>{message.body}</p>
             <div className="entry-actions">
-              <button type="button" className="btn btn-line" onClick={() => toggle(message)}>{message.read ? "Marquer non lu" : "Marquer lu"}</button>
-              <button type="button" className="btn btn-danger" onClick={() => remove(message)}>Supprimer</button>
+              <button type="button" className="btn btn-line" onClick={() => toggle(message)}>{message.read ? t("markUnread") : t("markRead")}</button>
+              <button type="button" className="btn btn-danger" onClick={() => remove(message)}>{t("deleteItem")}</button>
             </div>
           </article>
         ))}
@@ -566,6 +629,7 @@ export function MessagesPage() {
 }
 
 export function AccountPage() {
+  const { t } = useLang();
   const { toast } = useOutletContext();
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
@@ -578,7 +642,7 @@ export function AccountPage() {
       await api("/api/admin/password", { method: "PUT", auth: true, body: { current, next } });
       setCurrent("");
       setNext("");
-      toast("Mot de passe modifié");
+      toast(t("passwordChanged"));
     } catch (err) {
       setError(err.message);
     }
@@ -586,12 +650,12 @@ export function AccountPage() {
 
   return (
     <form className="card editor" onSubmit={submit}>
-      <p className="kicker">Compte</p>
-      <h1>Mot de passe</h1>
-      <label>Mot de passe actuel<input type="password" value={current} onChange={(e) => setCurrent(e.target.value)} required /></label>
-      <label>Nouveau mot de passe<input type="password" value={next} onChange={(e) => setNext(e.target.value)} required minLength={8} /></label>
+      <p className="kicker">{t("account")}</p>
+      <h1>{t("adminPassword")}</h1>
+      <label>{t("currentPassword")}<input type="password" value={current} onChange={(e) => setCurrent(e.target.value)} required /></label>
+      <label>{t("newPassword")}<input type="password" value={next} onChange={(e) => setNext(e.target.value)} required minLength={8} /></label>
       {error && <p className="form-error">{error}</p>}
-      <button className="btn btn-dark" type="submit">Mettre à jour</button>
+      <button className="btn btn-dark" type="submit">{t("update")}</button>
     </form>
   );
 }

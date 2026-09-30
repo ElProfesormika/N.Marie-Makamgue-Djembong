@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { api } from "./api.js";
+import { localizeSite } from "./en.js";
+import { useLang } from "./i18n.jsx";
 
 const SiteContext = createContext(null);
 
@@ -18,7 +20,7 @@ export const PATHS = {
   contact: "/contact",
 };
 
-export const REGIONS = ["Afrique", "Europe", "Amériques", "Asie", "Océanie"];
+export const REGIONS = ["Europe", "Afrique", "Amériques", "Asie", "Océanie"];
 
 export const SECTION_DEFAULTS = {
   heroPrimary: "Voir les actions",
@@ -153,6 +155,7 @@ export const COLLECTIONS = [
 ];
 
 export function SiteProvider({ children }) {
+  const { lang, t } = useLang();
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
 
@@ -164,18 +167,19 @@ export function SiteProvider({ children }) {
 
   const value = useMemo(() => {
     if (!data) return null;
+    const site = lang === "en" ? localizeSite(data) : data;
     return {
-      ...data,
-      page: (slug) => data.pages.find((item) => item.slug === slug),
-      items: (collection) => data.entries.filter((item) => item.collection === collection),
+      ...site,
+      page: (slug) => site.pages.find((item) => item.slug === slug),
+      items: (collection) => site.entries.filter((item) => item.collection === collection),
     };
-  }, [data]);
+  }, [data, lang]);
 
   if (error) {
     return (
       <div className="splash">
-        <p className="kicker">Connexion</p>
-        <h1>Le site ne peut pas joindre la base.</h1>
+        <p className="kicker">{t("splashKicker")}</p>
+        <h1>{t("splashTitle")}</h1>
         <p>{error}</p>
       </div>
     );
@@ -184,7 +188,7 @@ export function SiteProvider({ children }) {
     return (
       <div className="splash">
         <span className="loader" aria-hidden="true" />
-        <p>Chargement du portfolio Mama Coco…</p>
+        <p>{t("loading")}</p>
       </div>
     );
   }

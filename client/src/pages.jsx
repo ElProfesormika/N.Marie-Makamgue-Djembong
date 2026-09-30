@@ -5,10 +5,13 @@ import { Blocks, Continue, PageHero, Quote } from "./components.jsx";
 import { PresenceGlobe } from "./globe.jsx";
 import { InstitutionLogo, shortInstitution } from "./logos.jsx";
 import { locate } from "./places.js";
+import { useLang } from "./i18n.jsx";
+import { REGIONS_EN } from "./en.js";
 import { REGIONS, sectionCopy, useSite, useTitle } from "./site.jsx";
 
 export function HomePage() {
   const { page, items, settings } = useSite();
+  const { t } = useLang();
   const current = page("accueil");
   const hero = settings.hero || {};
   const brand = settings.brand || {};
@@ -38,9 +41,9 @@ export function HomePage() {
   const steps = items("methode");
   const copy = sectionCopy(settings);
   const institutions = items("institutions");
-  const headline = hero.headline || "Je mets ma force au service des femmes, des enfants et des démunis.";
+  const headline = hero.headline || "Je mets ma force au service des femmes, des enfants et des personnes en situation de vulnérabilité.";
   const lead = hero.lead || current.intro;
-  const highlight = "femmes, des enfants et des démunis";
+  const highlight = hero.highlight || "personnes en situation de vulnérabilité";
   const cut = headline.toLowerCase().indexOf(highlight);
 
   return (
@@ -71,14 +74,14 @@ export function HomePage() {
       </section>
 
       {rail.length > 0 && (
-        <section className="wrap rail" aria-label="Expertises">
+        <section className="wrap rail" aria-label={t("expertises")}>
           {rail.map((item) => (
             <span key={item.id}>{item.title}</span>
           ))}
         </section>
       )}
 
-      <section className="wrap stats" aria-label="Chiffres">
+      <section className="wrap stats" aria-label={t("figures")}>
         {items("stats").map((item) => (
           <article className="stat" key={item.id}>
             <strong>{item.metric}</strong>
@@ -88,7 +91,7 @@ export function HomePage() {
       </section>
 
       {institutions.length > 0 && (
-        <section className="marquee" aria-label="Institutions">
+        <section className="marquee" aria-label={t("institutions")}>
           <p>{copy.exchange}</p>
           <div className="marquee-window">
             <div className="marquee-track">
@@ -141,7 +144,7 @@ export function IdentityPage() {
   const { page, items, settings } = useSite();
   const current = page("qui-suis-je");
   const copy = sectionCopy(settings);
-  useTitle("Qui suis-je");
+  useTitle(current?.nav_label);
   if (!current) return <PageHero page={null} />;
   return (
     <article className="page">
@@ -215,7 +218,7 @@ export function RootsPage() {
   const { page, settings } = useSite();
   const current = page("racines");
   const hero = settings.hero || {};
-  useTitle("Racines");
+  useTitle(current?.nav_label);
   if (!current) return <PageHero page={null} />;
   return (
     <article className="page">
@@ -238,7 +241,7 @@ export function JourneyPage() {
   const { page, items, settings } = useSite();
   const current = page("parcours");
   const copy = sectionCopy(settings);
-  useTitle("Parcours");
+  useTitle(current?.nav_label);
   if (!current) return <PageHero page={null} />;
   return (
     <article className="page">
@@ -280,8 +283,9 @@ export function AssociationPage() {
   const current = page("aisbl");
   const copy = sectionCopy(settings);
   const presence = items("presence");
+  const { lang } = useLang();
   const [activeId, setActiveId] = useState(null);
-  useTitle("Un Geste Divin");
+  useTitle(current?.nav_label);
   if (!current) return <PageHero page={null} />;
   const located = presence.map((item) => ({ item, point: locate(item) }));
   const regions = [
@@ -293,12 +297,12 @@ export function AssociationPage() {
     .filter((entry) => entry.point)
     .map((entry) => ({
       location: [entry.point.lat, entry.point.lng],
-      size: entry.item.id === activeId ? 0.1 : 0.055,
+      size: entry.item.id === activeId ? 0.07 : 0.03,
       color: entry.item.id === activeId ? [0.95, 0.78, 0.25] : undefined,
     }));
   return (
     <article className="page">
-      <PageHero page={current} />
+      <PageHero page={current} logo="/ugd-logo.png" />
       <section className="wrap section reveal">
         <Blocks blocks={current.blocks} />
       </section>
@@ -327,7 +331,7 @@ export function AssociationPage() {
               const list = located.filter((entry) => entry.item.subtitle === region);
               return (
                 <article key={region}>
-                  <h3>{region}</h3>
+                  <h3>{lang === "en" ? REGIONS_EN[region] || region : region}</h3>
                   <div className="presence-names">
                     {list.map(({ item, point }) => (
                       <button
@@ -362,7 +366,8 @@ export function ActionsPage() {
   const letter = page("message");
   const poles = items("poles");
   const [open, setOpen] = useState(null);
-  useTitle("Actions & impact");
+  const { t } = useLang();
+  useTitle(current?.nav_label);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -419,7 +424,7 @@ export function ActionsPage() {
       {open && (
         <div className="lightbox" role="dialog" aria-modal="true" aria-label={open.title} onClick={() => setOpen(null)}>
           <div className="action-sheet" onClick={(event) => event.stopPropagation()}>
-            <button className="sheet-close" type="button" onClick={() => setOpen(null)} aria-label="Fermer">Fermer</button>
+            <button className="sheet-close" type="button" onClick={() => setOpen(null)} aria-label={t("close")}>{t("close")}</button>
             <div className="action-banner sheet-banner">
               {open.image && <img src={open.image} alt="" />}
               <span className="action-pin">{copy.actionPin}</span>
@@ -433,7 +438,7 @@ export function ActionsPage() {
       )}
       {letter && (letter.quote || letter.intro) && (
         <section className="wrap section message-band">
-          <p className="kicker">{letter.title || "Mon message"}</p>
+          <p className="kicker">{letter.title}</p>
           <Quote text={letter.quote} author={letter.quote_author} />
           {letter.intro && <p className="intro">{letter.intro}</p>}
           {letter.blocks?.length > 0 && <Blocks blocks={letter.blocks} />}
@@ -448,7 +453,7 @@ export function ActionsPage() {
 export function AwardsPage() {
   const { page, items } = useSite();
   const current = page("reconnaissances");
-  useTitle("Reconnaissances");
+  useTitle(current?.nav_label);
   if (!current) return <PageHero page={null} />;
   return (
     <article className="page">
@@ -472,7 +477,7 @@ export function NetworkPage() {
   const { page, items, settings } = useSite();
   const current = page("reseau");
   const copy = sectionCopy(settings);
-  useTitle("Réseau");
+  useTitle(current?.nav_label);
   if (!current) return <PageHero page={null} />;
   const institutions = items("institutions");
   const embassies = items("ambassades");
@@ -481,7 +486,7 @@ export function NetworkPage() {
     <article className="page">
       <PageHero page={current} />
       <section className="wrap network">
-        <div className="network-meter" aria-label="Aperçu du réseau">
+        <div className="network-meter" aria-label={current?.title || ""}>
           <p><strong>{institutions.length}</strong> institutions</p>
           <p><strong>{embassies.length}</strong> ambassades</p>
           <p><strong>{partners.length}</strong> partenaires</p>
@@ -543,20 +548,20 @@ function eventFinish(item) {
   return item.extra?.end || item.extra?.date || "";
 }
 
-function formatEventDate(start, end) {
+function formatEventDate(start, end, lang, toWord) {
   if (!start) return "";
-  const long = (iso) => new Intl.DateTimeFormat("fr-BE", {
+  const long = (iso) => new Intl.DateTimeFormat(lang === "en" ? "en-GB" : "fr-BE", {
     weekday: "long",
     day: "numeric",
     month: "long",
     year: "numeric",
   }).format(new Date(`${iso}T00:00:00`));
   if (!end || end === start) return long(start);
-  return `${long(start)} au ${long(end)}`;
+  return `${long(start)} ${toWord} ${long(end)}`;
 }
 
-function formatHours(start, end) {
-  if (start && end) return `${start} à ${end}`;
+function formatHours(start, end, toWord) {
+  if (start && end) return `${start} ${toWord} ${end}`;
   return start || end || "";
 }
 
@@ -587,8 +592,9 @@ function EventIcon({ name }) {
 }
 
 function EventFacts({ item }) {
-  const when = formatEventDate(eventStart(item), item.extra?.end || "");
-  const hours = formatHours(item.extra?.startTime || "", item.extra?.endTime || "");
+  const { lang, t } = useLang();
+  const when = formatEventDate(eventStart(item), item.extra?.end || "", lang, t("dateTo"));
+  const hours = formatHours(item.extra?.startTime || "", item.extra?.endTime || "", t("hourTo"));
   return (
     <ul className="event-meta">
       {when && <li><EventIcon name="date" /><span>{when}</span></li>}
@@ -609,6 +615,7 @@ function EventPoster({ item }) {
 }
 
 function EventCard({ item, onOpen }) {
+  const { t } = useLang();
   return (
     <article className="event-card">
       <EventPoster item={item} />
@@ -617,7 +624,7 @@ function EventCard({ item, onOpen }) {
         {item.body && <p className="event-excerpt">{item.body}</p>}
         <EventFacts item={item} />
         <div className="event-actions">
-          <button className="event-details" type="button" onClick={() => onOpen(item)}>Détails</button>
+          <button className="event-details" type="button" onClick={() => onOpen(item)}>{t("details")}</button>
         </div>
       </div>
     </article>
@@ -626,10 +633,11 @@ function EventCard({ item, onOpen }) {
 
 export function EventsPage() {
   const { page, items } = useSite();
+  const { t } = useLang();
   const current = page("evenements");
   const [filter, setFilter] = useState("upcoming");
   const [open, setOpen] = useState(null);
-  useTitle("Événements");
+  useTitle(current?.nav_label);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -657,7 +665,7 @@ export function EventsPage() {
       <PageHero page={current} />
       {open ? (
         <section className="wrap section event-view">
-          <button className="project-back" type="button" onClick={() => setOpen(null)}>Retour aux événements</button>
+          <button className="project-back" type="button" onClick={() => setOpen(null)}>{t("backEvents")}</button>
           <EventPoster item={open} />
           <h2>{open.title}</h2>
           <EventFacts item={open} />
@@ -665,16 +673,16 @@ export function EventsPage() {
         </section>
       ) : (
         <section className="wrap section">
-          <div className="event-filters" role="tablist" aria-label="Filtrer les événements">
+          <div className="event-filters" role="tablist" aria-label={t("filterEvents")}>
             <button type="button" role="tab" aria-selected={filter === "upcoming"} className={filter === "upcoming" ? "on" : ""} onClick={() => setFilter("upcoming")}>
-              À venir
+              {t("upcoming")}
             </button>
             <button type="button" role="tab" aria-selected={filter === "past"} className={filter === "past" ? "on" : ""} onClick={() => setFilter("past")}>
-              Passés
+              {t("past")}
             </button>
           </div>
           {shown.length === 0 && (
-            <p className="intro">{filter === "past" ? "Aucun événement passé pour le moment." : "Aucun événement à venir pour le moment."}</p>
+            <p className="intro">{filter === "past" ? t("nonePast") : t("noneUpcoming")}</p>
           )}
           <div className="event-grid">
             {shown.map((item) => <EventCard key={item.id} item={item} onOpen={setOpen} />)}
@@ -688,10 +696,11 @@ export function EventsPage() {
 
 export function GalleryPage() {
   const { page, items } = useSite();
+  const { t } = useLang();
   const current = page("galerie");
   const photos = items("galerie");
   const [open, setOpen] = useState(null);
-  useTitle("Galerie");
+  useTitle(current?.nav_label);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -710,22 +719,22 @@ export function GalleryPage() {
       <PageHero page={current} />
       {open ? (
         <section className="wrap section project-view">
-          <button className="project-back" type="button" onClick={() => setOpen(null)}>Retour à la galerie</button>
+          <button className="project-back" type="button" onClick={() => setOpen(null)}>{t("backGallery")}</button>
           {open.subtitle && <p className="project-theme">{open.subtitle}</p>}
           <h2>{open.title}</h2>
           {open.body && <p className="project-lead">{open.body}</p>}
           {open.image && (
             <figure className="project-frame">
-              <img src={open.image} alt={open.title || "Photo"} />
+              <img src={open.image} alt={open.title || t("photo")} />
             </figure>
           )}
           <div className="project-facts">
             {(open.metric || open.subtitle || status) && (
               <article className="card">
-                <h3>Informations</h3>
-                {open.metric && <p>Date : {open.metric}</p>}
-                {open.subtitle && <p>Thème : {open.subtitle}</p>}
-                {status && <p>Statut : {status}</p>}
+                <h3>{t("info")}</h3>
+                {open.metric && <p>{t("date")} : {open.metric}</p>}
+                {open.subtitle && <p>{t("theme")} : {open.subtitle}</p>}
+                {status && <p>{t("status")} : {status}</p>}
               </article>
             )}
             {open.body && (
@@ -738,12 +747,12 @@ export function GalleryPage() {
         </section>
       ) : (
         <section className="wrap section">
-          {photos.length === 0 && <p className="intro">Aucune photo pour le moment.</p>}
+          {photos.length === 0 && <p className="intro">{t("emptyPhotos")}</p>}
           <div className="project-grid">
             {photos.map((item) => (
               <article className="project-card" key={item.id}>
                 <div className="project-visual">
-                  {item.image && <img src={item.image} alt={item.title || "Photo"} />}
+                  {item.image && <img src={item.image} alt={item.title || t("photo")} />}
                   {item.subtitle && <span className="project-pill">{item.subtitle}</span>}
                   {item.extra?.status && <span className="project-state">{item.extra.status}</span>}
                 </div>
@@ -751,7 +760,7 @@ export function GalleryPage() {
                   <h3>{item.title}</h3>
                   {item.body && <p>{item.body}</p>}
                   {item.metric && <p className="project-date">{item.metric}</p>}
-                  <button className="project-more" type="button" onClick={() => setOpen(item)}>Découvrir</button>
+                  <button className="project-more" type="button" onClick={() => setOpen(item)}>{t("discover")}</button>
                 </div>
               </article>
             ))}
@@ -765,12 +774,13 @@ export function GalleryPage() {
 
 export function ContactPage() {
   const { page, settings } = useSite();
+  const { t } = useLang();
   const current = page("contact");
   const contact = settings.contact || {};
   const [form, setForm] = useState({ name: "", email: "", phone: "", body: "", company: "" });
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
-  useTitle("Contact");
+  useTitle(current?.nav_label);
 
   async function submit(event) {
     event.preventDefault();
@@ -779,7 +789,7 @@ export function ContactPage() {
     try {
       await api("/api/contact", { method: "POST", body: form });
       setForm({ name: "", email: "", phone: "", body: "", company: "" });
-      setStatus("Message envoyé. Je l'ai bien reçu.");
+      setStatus(t("sent"));
     } catch (err) {
       setError(err.message);
     }
@@ -793,32 +803,32 @@ export function ContactPage() {
         <div className="cards">
           <article className="card">
             <p className="kicker">{contact.org}</p>
-            <h2>Siège social</h2>
+            <h2>{t("seat")}</h2>
             <p>{contact.address}</p>
           </article>
           <article className="card">
-            <p className="kicker">Téléphone</p>
+            <p className="kicker">{t("phone")}</p>
             <h2><a href={`tel:${(contact.phone || "").replace(/\s/g, "")}`}>{contact.phone}</a></h2>
           </article>
           <article className="card">
-            <p className="kicker">E-mail</p>
+            <p className="kicker">{t("email")}</p>
             <h2><a href={`mailto:${contact.email}`}>{contact.email}</a></h2>
           </article>
           <article className="card">
-            <p className="kicker">Site</p>
+            <p className="kicker">{t("website")}</p>
             <h2><a href={contact.website} target="_blank" rel="noreferrer">{contact.websiteLabel}</a></h2>
           </article>
         </div>
         <form className="card form" onSubmit={submit}>
-          <h2>Écrire un message</h2>
-          <label>Nom<input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required /></label>
-          <label>E-mail<input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required /></label>
-          <label>Téléphone<input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></label>
-          <label>Message<textarea value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} required /></label>
+          <h2>{t("write")}</h2>
+          <label>{t("name")}<input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required /></label>
+          <label>{t("email")}<input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required /></label>
+          <label>{t("phone")}<input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></label>
+          <label>{t("message")}<textarea value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} required /></label>
           <input className="hp" tabIndex={-1} autoComplete="off" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} aria-hidden="true" />
           {error && <p className="form-error">{error}</p>}
           {status && <p className="form-ok">{status}</p>}
-          <button className="btn btn-dark" type="submit">Envoyer</button>
+          <button className="btn btn-dark" type="submit">{t("send")}</button>
         </form>
       </section>
     </article>
@@ -826,12 +836,13 @@ export function ContactPage() {
 }
 
 export function NotFoundPage() {
-  useTitle("Page introuvable");
+  const { t } = useLang();
+  useTitle(t("missing"));
   return (
     <section className="page-hero wrap">
       <p className="kicker">404</p>
-      <h1>Cette page n'existe pas.</h1>
-      <Link className="btn btn-dark" to="/">Retour à l'accueil</Link>
+      <h1>{t("notFound")}</h1>
+      <Link className="btn btn-dark" to="/">{t("backHome")}</Link>
     </section>
   );
 }

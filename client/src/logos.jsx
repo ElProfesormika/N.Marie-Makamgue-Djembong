@@ -120,6 +120,33 @@ function BelgianSenate() {
   );
 }
 
+function FederalParliament() {
+  return (
+    <Frame label="Parlement fédéral">
+      <circle cx="32" cy="32" r="32" fill="#111" />
+      <path d="M10 40h44v6H10z" fill="#fdda24" />
+      <path d="M10 46h44v8H10z" fill="#ef3340" />
+      <polygon points="14,40 32,18 50,40" fill="#f7f3ea" />
+      {[20, 28, 36].map((x) => (
+        <rect key={x} x={x} y="28" width="4" height="12" fill="#111" />
+      ))}
+    </Frame>
+  );
+}
+
+function NationalAssembly() {
+  return (
+    <Frame label="Assemblée nationale">
+      <circle cx="32" cy="32" r="32" fill="#002395" />
+      <rect x="12" y="40" width="40" height="10" fill="#ed2939" />
+      <polygon points="16,40 32,20 48,40" fill="#fff" />
+      {[22, 29, 36].map((x) => (
+        <rect key={x} x={x} y="30" width="4" height="10" fill="#002395" />
+      ))}
+    </Frame>
+  );
+}
+
 function Fallback({ name }) {
   const letters = name
     .split(" ")
@@ -140,18 +167,21 @@ function Fallback({ name }) {
 
 export function InstitutionLogo({ name }) {
   const key = (name || "").toLowerCase();
-  if (key.includes("maison blanche")) return <WhiteHouse />;
-  if (key.includes("nations unies") || key.includes("onu")) return <UnitedNations />;
+  if (key.includes("maison blanche") || key.includes("white house")) return <WhiteHouse />;
+  if (key.includes("nations unies") || key.includes("onu") || key.includes("united nations")) return <UnitedNations />;
   if (key.includes("commission")) return <EuropeanCommission />;
   if (key.includes("unesco")) return <Unesco />;
-  if (key.includes("parlement")) return <EuropeanParliament />;
-  if (key.includes("africaine")) return <AfricanUnion />;
-  if (key.includes("sénat") || key.includes("senat") || key.includes("belgique")) return <BelgianSenate />;
+  if (key.includes("fédéral") || key.includes("federal")) return <FederalParliament />;
+  if (key.includes("assemblée") || key.includes("assemblee") || key.includes("national assembly")) return <NationalAssembly />;
+  if (key.includes("parlement") || key.includes("parliament")) return <EuropeanParliament />;
+  if (key.includes("africaine") || key.includes("african union")) return <AfricanUnion />;
+  if (key.includes("sénat") || key.includes("senat") || key.includes("belgique") || key.includes("senate")) return <BelgianSenate />;
   return <Fallback name={name} />;
 }
 
 export function shortInstitution(name) {
   const key = (name || "").toLowerCase();
-  if (key.includes("nations unies")) return "Nations Unies";
+  if (key.includes("nations unies") || key === "onu") return "ONU";
+  if (key.includes("united nations")) return "UN";
   return name;
 }

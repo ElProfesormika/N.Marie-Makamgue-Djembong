@@ -12,7 +12,7 @@ export const pages = [
     intro:
       "Je suis fondatrice-présidente de l'AISBL internationale « Un Geste Divin », coach business, coach en confiance en soi et coach matrimoniale. Je suis membre de la Fédération des Femmes pour la paix mondiale et de la Fédération des Femmes de Bruxelles. J'habite à Charleroi, en Belgique. Mon engagement humanitaire a commencé en 2006.",
     quote:
-      "Ensemble, donnons le sourire aux démunis et construisons un monde plus juste, plus sûr et plus solidaire.",
+      "Ensemble, donnons le sourire aux personnes en situation de vulnérabilité, aux personnes en situation de handicap, aux enfants autistes, aux drépanocytaires, aux mamans solos, aux personnes albinos, aux personnes âgées et aux déplacés de guerre, et construisons un monde plus juste, plus sûr et plus solidaire.",
     quote_author: "Mama Coco",
     blocks: [],
   },
@@ -22,9 +22,9 @@ export const pages = [
     nav_order: 2,
     kicker: "01 · Portrait & identité",
     title: "Ma voix transcontinentale",
-    subtitle: "De Charleroi, je vais vers vingt-cinq pays d'Afrique, et au-delà.",
+    subtitle: "De Charleroi, je vais d'abord vers dix pays d'Europe, puis vers vingt-huit pays d'Afrique, et au-delà.",
     intro:
-      "Je suis originaire d'Afrique, établie à Charleroi, en Belgique, et de nationalité belge. Mes actions ont une envergure transcontinentale. Ancienne fonctionnaire de police et ancienne assistante sociale, je mets depuis 2006 ma force, mon réseau et mon empathie au service exclusif des femmes, des enfants et des démunis.",
+      "Je suis originaire d'Afrique, établie à Charleroi, en Belgique, et de nationalité belge. Mes actions ont une envergure transcontinentale. Ancienne assistante sociale, je mets depuis 2006 ma force, mon réseau et mon empathie au service des femmes, des enfants et des personnes en situation de vulnérabilité : personnes en situation de handicap, enfants autistes, drépanocytaires, mamans solos, personnes albinos, personnes âgées et déplacés de guerre.",
     quote: "",
     quote_author: "",
     blocks: [
@@ -63,9 +63,9 @@ export const pages = [
     nav_order: 4,
     kicker: "03 · Académique & professionnel",
     title: "De la discipline à mon engagement",
-    subtitle: "Travail social, police, coaching et leadership humanitaire.",
+    subtitle: "Travail social, coaching et leadership humanitaire.",
     intro:
-      "J'ai un bac +2 en travail social. J'ai servi dans la police, puis j'ai mené près de vingt ans d'action de terrain. Chaque étape m'a apporté une compétence : l'écoute, la rigueur, la protection, puis la capacité de faire grandir d'autres femmes.",
+      "J'ai un bac +2 en travail social. J'ai mené près de vingt ans d'action de terrain. Chaque étape m'a apporté une compétence : l'écoute, la rigueur, la protection, puis la capacité de faire grandir d'autres femmes.",
     quote: "",
     quote_author: "",
     blocks: [],
@@ -78,7 +78,7 @@ export const pages = [
     title: "L'AISBL « Un Geste Divin »",
     subtitle: "Un mouvement de solidarité internationale, présent sur quatre continents.",
     intro:
-      "J'ai lancé cette association humanitaire internationale en 2023. Elle a été officiellement agréée en Belgique en 2024. Elle est présente dans 25 pays d'Afrique, 6 pays d'Europe, 4 pays d'Asie et en Océanie. J'en suis la fondatrice et la présidente.",
+      "J'ai lancé cette association humanitaire internationale en 2023. Elle a été officiellement agréée en Belgique en 2024. Elle est présente dans 10 pays d'Europe, 28 pays d'Afrique, 5 pays d'Asie, 2 pays d'Océanie et aux États-Unis. J'en suis la fondatrice et la présidente.",
     quote: "",
     quote_author: "",
     blocks: [
@@ -162,7 +162,7 @@ export const pages = [
     intro:
       "L'union fait la force. Voici les mots que je veux laisser.",
     quote:
-      "N'attendez pas que le monde change de lui-même. Si la vie vous a armée à travers l'épreuve, utilisez cette force pour bâtir des refuges, creuser des puits d'eau potable, éduquer la jeunesse et guérir les âmes brisées. L'union fait la force : ensemble, donnons le sourire aux démunis et construisons un monde plus juste, plus sûr et plus solidaire.",
+      "N'attendez pas que le monde change de lui-même. Si la vie vous a armée à travers l'épreuve, utilisez cette force pour bâtir des refuges, creuser des puits d'eau potable, éduquer la jeunesse et guérir les âmes brisées. L'union fait la force : ensemble, donnons le sourire aux personnes en situation de vulnérabilité, aux personnes en situation de handicap, aux enfants autistes, aux drépanocytaires, aux mamans solos, aux personnes albinos, aux personnes âgées et aux déplacés de guerre, et construisons un monde plus juste, plus sûr et plus solidaire.",
     quote_author: "Marie Nicaise Makamgue Djembong, alias Mama Coco",
     blocks: [],
   },
@@ -188,15 +188,16 @@ export const settings = {
     mark: "MC",
     topbar: "Ambassadrice de la paix universelle · Charleroi, Belgique",
     footerQuote:
-      "Ensemble, donnons le sourire aux démunis et construisons un monde plus juste, plus sûr et plus solidaire.",
+      "Ensemble, donnons le sourire aux personnes en situation de vulnérabilité, aux personnes en situation de handicap, aux enfants autistes, aux drépanocytaires, aux mamans solos, aux personnes albinos, aux personnes âgées et aux déplacés de guerre, et construisons un monde plus juste, plus sûr et plus solidaire.",
     portraitMenu: "Moi",
   },
   hero: {
     roles:
       "Coach Business · Coach en confiance en soi · Coach matrimoniale · Présidente des Femmes Panafricaines",
-    headline: "Je mets ma force au service des femmes, des enfants et des démunis.",
+    headline: "Je mets ma force au service des femmes, des enfants et des personnes en situation de vulnérabilité.",
+    highlight: "personnes en situation de vulnérabilité",
     lead: "Fondatrice-présidente de l'AISBL Un Geste Divin. Coach business, confiance en soi et matrimoniale. Depuis 2006, à Charleroi et sur quatre continents.",
-    photo: "/uploads/hero.jpg",
+    photo: "/uploads/hero-diplomatie.jpg",
     portrait: "/uploads/galerie-1.jpg",
     badge: "Depuis 2006",
     aside: "Un Geste Divin",
@@ -236,7 +237,7 @@ export const settings = {
   contact: {
     address: "Rue du Collège 25, 6000 Charleroi, Belgique",
     phone: "+32 472 28 50 39",
-    email: "internationaleungestedivin@gmail.com",
+    email: "Mariemakamgue@gmail.com",
     website: "https://www.ungestedivin.org",
     websiteLabel: "www.ungestedivin.org",
     org: "AISBL Un Geste Divin",
@@ -259,11 +260,11 @@ function entry(collection, sort_order, data) {
 }
 
 export const entries = [
-  entry("stats", 0, { metric: "20+", title: "ans d'engagement", body: "Au service des femmes, des enfants et des démunis." }),
-  entry("stats", 1, { metric: "25", title: "pays d'Afrique", body: "Une présence associative transcontinentale." }),
+  entry("stats", 0, { metric: "20+", title: "ans d'engagement", body: "Au service des femmes, des enfants et des personnes en situation de vulnérabilité." }),
+  entry("stats", 1, { metric: "28", title: "pays d'Afrique", body: "Une présence associative transcontinentale." }),
   entry("stats", 2, { metric: "1000+", title: "femmes soutenues", body: "Femmes en situation précaire accompagnées." }),
-  entry("stats", 3, { metric: "10+", title: "passages télévisés", body: "En Afrique comme en Europe." }),
-  entry("stats", 4, { metric: "4", title: "continents actifs", body: "Afrique, Europe, Asie et Océanie." }),
+  entry("stats", 3, { metric: "10+", title: "passages télévisés", body: "En Europe comme en Afrique." }),
+  entry("stats", 4, { metric: "5", title: "continents actifs", body: "Europe, Afrique, Asie, Océanie et Amériques." }),
 
   entry("expertises", 0, { title: "Coaching business" }),
   entry("expertises", 1, { title: "Coaching en confiance en soi" }),
@@ -295,7 +296,7 @@ export const entries = [
   }),
   entry("methode", 1, {
     title: "Protéger",
-    body: "J'ai été policière et assistante sociale, puis j'ai mené vingt ans d'action auprès des plus exposés.",
+    body: "J'ai été assistante sociale, puis j'ai mené vingt ans d'action auprès des personnes en situation de vulnérabilité.",
   }),
   entry("methode", 2, {
     title: "Rendre autonome",
@@ -303,7 +304,7 @@ export const entries = [
   }),
   entry("methode", 3, {
     title: "Relier",
-    body: "Mon association est présente en Afrique, en Europe, en Asie et en Océanie.",
+    body: "Mon association est présente en Europe, en Afrique, en Asie et en Océanie.",
   }),
 
   entry("explorer", 0, {
@@ -336,11 +337,6 @@ export const entries = [
     body: "Je porte une vision globale du monde et un sens aigu de la diplomatie, forgés dès le plus jeune âge.",
   }),
   entry("identite", 2, {
-    title: "J'ai été fonctionnaire de police",
-    subtitle: "Sens de la protection",
-    body: "Ce parcours rigoureux m'a donné le sens de l'autorité, de la protection des citoyens et de la justice sociale.",
-  }),
-  entry("identite", 3, {
     title: "Fondatrice-présidente",
     subtitle: "AISBL Un Geste Divin",
     body: "J'ai lancé cette association internationale en 2023. Elle a été officiellement agréée en Belgique en 2024.",
@@ -352,26 +348,21 @@ export const entries = [
     body: "J'ai été assistante sociale au Tchad, auprès des femmes victimes de violences conjugales et des enfants victimes de viol.",
   }),
   entry("parcours", 1, {
-    subtitle: "Protection",
-    title: "Ancienne fonctionnaire de police",
-    body: "J'y ai appris la rigueur, la résistance psychologique et une connaissance fine des enjeux de sécurité des populations vulnérables.",
-  }),
-  entry("parcours", 2, {
     subtitle: "Depuis 2006",
     title: "Engagement humanitaire de terrain",
-    body: "Je mets ma force, mon réseau et mon empathie au service exclusif des démunis. J'ai distribué des tonnes de vivres et de matériel aux orphelinats, aux camps de déplacés et aux femmes battues.",
+    body: "Je mets ma force, mon réseau et mon empathie au service des personnes en situation de handicap, des enfants autistes, des drépanocytaires, des mamans solos, des personnes albinos, des personnes âgées et des déplacés de guerre. J'ai distribué des tonnes de vivres et de matériel aux orphelinats, aux camps de déplacés et aux femmes battues.",
   }),
-  entry("parcours", 3, {
+  entry("parcours", 2, {
     subtitle: "Accompagnement",
     title: "Coaching & prise de parole",
     body: "Je suis coach business, coach en confiance en soi et coach matrimoniale : lancer une activité, habiter sa voix, accompagner couples et familles.",
   }),
-  entry("parcours", 4, {
+  entry("parcours", 3, {
     subtitle: "Lettres & arts",
     title: "Poétesse, autrice, scène",
     body: "Je suis autrice de plusieurs publications, active en comédie et en chant sur les plateformes numériques. Je suis membre de la CAAD, Caravane des Auteurs Africains de la Diaspora.",
   }),
-  entry("parcours", 5, {
+  entry("parcours", 4, {
     subtitle: "Excellence",
     title: "Doctorat & certifications",
     body: "J'ai obtenu un doctorat à United American University for Leadership and Excellence. Plusieurs certifications professionnelles internationales renforcent mon expertise et ma crédibilité.",
@@ -391,29 +382,30 @@ export const entries = [
   entry("antennes", 2, { title: "Représentations internationales", body: "États-Unis, Royaume-Uni, Allemagne" }),
 
   ...[
-    "Cameroun", "RD Congo", "Congo-Brazzaville", "Tchad", "Gabon", "Centrafrique", "Rwanda", "Kenya",
-    "Éthiopie", "Ouganda", "Burundi", "Togo", "Ghana", "Burkina Faso", "Côte d'Ivoire", "Guinée équatoriale",
-    "Bénin", "Sénégal", "Cap-Vert", "Madagascar", "Maroc", "Algérie",
-  ].map((title, i) => entry("presence", i, { title, subtitle: "Afrique" })),
-  ...["Belgique", "France", "Allemagne", "Suisse", "Espagne", "Italie"].map((title, i) =>
-    entry("presence", 100 + i, { title, subtitle: "Europe" })
+    "France", "Allemagne", "Espagne", "Italie", "Hongrie", "Pays-Bas", "Autriche", "Angleterre", "Canada", "Suisse",
+  ].map((title, i) => entry("presence", i, { title, subtitle: "Europe" })),
+  ...[
+    "Togo", "Bénin", "Cameroun", "Côte d'Ivoire", "Sénégal", "Mali", "Tchad", "Congo-Kinshasa",
+    "Congo-Brazzaville", "Ouganda", "Burkina Faso", "Niger", "Nigéria", "Gabon", "Kenya", "Éthiopie",
+    "Rwanda", "Burundi", "Somalie", "Centrafrique", "Maroc", "Égypte", "Algérie", "Tunisie",
+    "Guinée équatoriale", "Guinée-Conakry", "Guinée-Bissau", "Afrique du Sud",
+  ].map((title, i) => entry("presence", 100 + i, { title, subtitle: "Afrique" })),
+  ...["Chine", "Japon", "Malaisie", "Thaïlande", "Indonésie"].map((title, i) =>
+    entry("presence", 300 + i, { title, subtitle: "Asie" })
   ),
-  entry("presence", 200, { title: "Canada", subtitle: "Amériques", body: "Je cite le Canada parmi les pays de mon réseau international." }),
-  entry("presence", 300, {
-    title: "4 pays d'Asie",
-    subtitle: "Asie",
-    body: "J'y ai un réseau de bénévoles, de partenaires et de représentants.",
-  }),
-  entry("presence", 301, {
-    title: "Océanie",
-    subtitle: "Océanie",
-    body: "J'y commence une présence.",
+  ...["Australie", "Nouvelle-Zélande"].map((title, i) =>
+    entry("presence", 400 + i, { title, subtitle: "Océanie" })
+  ),
+  entry("presence", 500, {
+    title: "États-Unis",
+    subtitle: "Amériques",
+    body: "Présence dans 3 États.",
   }),
 
   entry("poles", 0, { title: "Santé & prévention", body: "Je soutiens des hôpitaux et des centres de santé en zones rurales, et je mène des actions de santé publique de proximité.", extra: { odds: [3] } }),
   entry("poles", 1, { title: "Protection des femmes & enfants", body: "Je lutte contre les violences faites aux femmes, les viols, le harcèlement et les discriminations.", extra: { odds: [5, 16] } }),
   entry("poles", 2, { title: "Maladies spécifiques", body: "Je prends en charge et je sensibilise autour des enfants autistes et des malades de la drépanocytose.", extra: { odds: [3, 10] } }),
-  entry("poles", 3, { title: "Groupes vulnérables", body: "Je soutiens les orphelins, les veuves, les personnes âgées, les personnes en situation de handicap, les déplacés de guerre et les sans-abris.", extra: { odds: [1, 10] } }),
+  entry("poles", 3, { title: "Groupes vulnérables", body: "Je soutiens les personnes en situation de handicap, les enfants autistes, les drépanocytaires, les mamans solos, les personnes albinos, les personnes âgées, les déplacés de guerre, les orphelins et les veuves.", extra: { odds: [1, 10] } }),
   entry("poles", 4, { title: "Éducation & développement durable", body: "Je fais construire des écoles et je réalise des forages d'eau potable au Ghana, au Burkina Faso, en Ouganda et en Côte d'Ivoire.", extra: { odds: [4, 6] } }),
   entry("poles", 5, { title: "Autonomisation & lutte contre l'exil", body: "Je propose des formations gratuites (artisanat, arts) et l'entrepreneuriat local, pour offrir une alternative à l'exil périlleux de la jeunesse.", extra: { odds: [4, 8] } }),
 
@@ -421,14 +413,14 @@ export const entries = [
   entry("realisations", 1, { metric: "Forages", title: "accès à l'eau potable", body: "Burkina Faso, Ghana, Côte d'Ivoire, Ouganda.", extra: { odds: [6] } }),
   entry("realisations", 2, { metric: "2", title: "orphelinats", body: "Deux orphelinats portant le nom de mon association, au Cameroun.", extra: { odds: [1, 4] } }),
   entry("realisations", 3, { metric: "Tonnes", title: "de vivres distribués", body: "Orphelinats, camps de déplacés et femmes battues.", extra: { odds: [2] } }),
-  entry("realisations", 4, { metric: "25", title: "pays d'Afrique", body: "Et une présence en Europe, en Asie et en Océanie.", extra: { odds: [17] } }),
+  entry("realisations", 4, { metric: "10", title: "pays d'Europe", body: "Puis 28 pays d'Afrique, 5 pays d'Asie, 2 pays d'Océanie et les États-Unis.", extra: { odds: [17] } }),
   entry("realisations", 5, { metric: "10+", title: "prix & passages TV", body: "Plus de dix prix pour mon dévouement humanitaire, et plus de dix passages télévisés.", extra: { odds: [17] } }),
 
   entry("reconnaissances", 0, { title: "Forum REPATS", subtitle: "Panéliste", body: "J'ai été invitée d'honneur et panéliste de sommets mondiaux, dont le Forum REPATS." }),
   entry("reconnaissances", 1, { title: "Trophées des Leaders", subtitle: "Candidate", body: "J'ai été candidate dans la catégorie Femme Leader." }),
   entry("reconnaissances", 2, { title: "Plus de 10 prix", subtitle: "Dévouement humanitaire", body: "J'ai été honorée pour un engagement transcontinental de longue haleine." }),
   entry("reconnaissances", 3, { title: "Porte-voix de la paix", subtitle: "Afrique et Europe", body: "Je m'engage pour une synergie de respect mutuel, de responsabilité partagée et de co-développement." }),
-  entry("reconnaissances", 4, { title: "Reconnaissance médiatique", subtitle: "10+ passages", body: "Plus de dix passages télévisés ont relayé mon engagement, en Afrique comme en Europe." }),
+  entry("reconnaissances", 4, { title: "Reconnaissance médiatique", subtitle: "10+ passages", body: "Plus de dix passages télévisés ont relayé mon engagement, en Europe comme en Afrique." }),
 
   entry("institutions", 0, { title: "Maison Blanche" }),
   entry("institutions", 1, { title: "Organisation des Nations Unies" }),
@@ -437,6 +429,8 @@ export const entries = [
   entry("institutions", 4, { title: "Parlement européen" }),
   entry("institutions", 5, { title: "Union africaine" }),
   entry("institutions", 6, { title: "Sénat de Belgique" }),
+  entry("institutions", 7, { title: "Parlement fédéral" }),
+  entry("institutions", 8, { title: "Assemblée nationale" }),
 
   ...[
     "Togo", "Burkina Faso", "RD Congo", "Congo-Brazzaville", "Tchad", "Sénégal", "Mali", "Burundi",
@@ -461,7 +455,7 @@ export const entries = [
     title: "Portrait officiel",
     subtitle: "Portrait",
     body: "Mon portrait officiel, alias Mama Coco.",
-    image: "/uploads/hero.jpg",
+    image: "/uploads/hero-diplomatie.jpg",
   }),
   entry("galerie", 1, {
     title: "Tenue de lumière",
@@ -475,8 +469,11 @@ export async function seedIfEmpty() {
   const existing = await pool.query("SELECT COUNT(*)::int AS n FROM pages");
   if (existing.rows[0].n > 0) return;
 
-  const email = (process.env.ADMIN_EMAIL || "admin@ungestedivin.org").toLowerCase();
-  const password = process.env.ADMIN_PASSWORD || "MamaCoco2026";
+  const email = (process.env.ADMIN_EMAIL || "").toLowerCase();
+  const password = process.env.ADMIN_PASSWORD || "";
+  if (!email.includes("@") || password.length < 16) {
+    throw new Error("ADMIN_EMAIL et ADMIN_PASSWORD (16 caractères minimum) sont requis pour créer le compte.");
+  }
   const hash = await bcrypt.hash(password, 10);
 
   const client = await pool.connect();

@@ -10,6 +10,7 @@ import {
   SettingsEditor,
 } from "./admin.jsx";
 import { Layout } from "./components.jsx";
+import { LanguageProvider } from "./i18n.jsx";
 import {
   ActionsPage,
   AssociationPage,
@@ -29,6 +30,7 @@ import { SiteProvider } from "./site.jsx";
 export default function App() {
   return (
     <BrowserRouter>
+      <LanguageProvider>
       <Routes>
         <Route element={<SiteProvider><Layout /></SiteProvider>}>
           <Route index element={<HomePage />} />
@@ -55,6 +57,7 @@ export default function App() {
           <Route path="compte" element={<AccountPage />} />
         </Route>
       </Routes>
+      </LanguageProvider>
     </BrowserRouter>
   );
 }
